@@ -15,7 +15,7 @@ function getRandomNumber(min, max) {
 
 function onPopupEscPress(evt) {
   if (evt.keyCode === ESC_KEYCODE && evt.target !== nameInput) {
-    setup.classList.add('hidden');
+    closePopup();
   }
 }
 
@@ -44,6 +44,8 @@ function openPopup() {
 
 function closePopup() {
   setup.classList.add('hidden');
+  setup.style.left = setupInitPosition.left;
+  setup.style.top = setupInitPosition.top;
   document.removeEventListener('keydown', onPopupEscPress);
 }
 
@@ -71,6 +73,10 @@ function renderWizard(wizard) {
 
 var setupOpen = document.querySelector('.setup-open');
 var setup = document.querySelector('.setup');
+var setupInitPosition = {
+  left: setup.style.left,
+  top: setup.style.top
+};
 var setupClose = setup.querySelector('.setup-close');
 var nameInput = setup.querySelector('.setup-user-name');
 var player = setup.querySelector('.setup-player');
