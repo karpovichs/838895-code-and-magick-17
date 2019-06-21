@@ -1,7 +1,7 @@
 'use strict';
 
 (function () {
-  var keyCodes = {
+  var KeyCodes = {
     ESC: 27,
     ENTER: 13
   };
@@ -11,12 +11,12 @@
       return Math.floor(Math.random() * (max - min)) + min;
     },
     isEscEvent: function (evt, action) {
-      if (evt.keyCode === keyCodes.ESC) {
+      if (evt.keyCode === KeyCodes.ESC) {
         action();
       }
     },
     isEnterEvent: function (evt, action) {
-      if (evt.keyCode === keyCodes.ENTER) {
+      if (evt.keyCode === KeyCodes.ENTER) {
         action();
       }
     }
