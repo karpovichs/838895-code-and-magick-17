@@ -1,8 +1,51 @@
 'use strict';
 (function () {
+  var setup = document.querySelector('.setup');
+  var setupOpen = document.querySelector('.setup-open');
+  var setupInitPosition = {
+    left: setup.style.left,
+    top: setup.style.top
+  };
+  var setupClose = setup.querySelector('.setup-close');
+  var nameInput = setup.querySelector('.setup-user-name');
+  var dialogHandler = setup.querySelector('.upload');
 
-  var setupDialogElement = document.querySelector('.setup');
-  var dialogHandler = setupDialogElement.querySelector('.upload');
+  function onPopupEscPress(evt) {
+    if (evt.target !== nameInput) {
+      window.utils.isEscEvent(evt, closePopup);
+    }
+  }
+
+  function openPopup() {
+    var similarWizards = window.setup.createWizardsArray();
+    window.setup.renderWizardsList(similarWizards);
+    setup.classList.remove('hidden');
+    setup.querySelector('.setup-similar').classList.remove('hidden');
+    document.addEventListener('keydown', onPopupEscPress);
+  }
+
+  function closePopup() {
+    setup.classList.add('hidden');
+    setup.style.left = setupInitPosition.left;
+    setup.style.top = setupInitPosition.top;
+    document.removeEventListener('keydown', onPopupEscPress);
+  }
+
+  setupOpen.addEventListener('click', function () {
+    openPopup();
+  });
+
+  setupOpen.addEventListener('keydown', function (evt) {
+    window.utils.isEnterEvent(evt, openPopup);
+  });
+
+  setupClose.addEventListener('click', function () {
+    closePopup();
+  });
+
+  setupClose.addEventListener('keydown', function (evt) {
+    window.utils.isEnterEvent(evt, closePopup);
+  });
 
   dialogHandler.addEventListener('mousedown', function (evt) {
     evt.preventDefault();
@@ -28,9 +71,8 @@
         y: moveEvt.clientY
       };
 
-      setupDialogElement.style.top = (setupDialogElement.offsetTop - shift.y) + 'px';
-      setupDialogElement.style.left = (setupDialogElement.offsetLeft - shift.x) + 'px';
-
+      setup.style.top = (setup.offsetTop - shift.y) + 'px';
+      setup.style.left = (setup.offsetLeft - shift.x) + 'px';
     }
 
     function onClickPreventDefault(clickEvt) {
