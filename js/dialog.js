@@ -9,6 +9,11 @@
   var setupClose = setup.querySelector('.setup-close');
   var nameInput = setup.querySelector('.setup-user-name');
   var dialogHandler = setup.querySelector('.upload');
+  var form = setup.querySelector('.setup-wizard-form');
+  var formSubmit = form.querySelector('.setup-submit');
+  var similarBlock = setup.querySelector('.setup-similar');
+  var similarWizards = similarBlock.querySelector('.setup-similar-list');
+  var isError = false;
 
   function onPopupEscPress(evt) {
     if (evt.target !== nameInput) {
@@ -16,20 +21,65 @@
     }
   }
 
+  function onWizardsSuccess(wizards) {
+    window.setup.renderWizardsList(wizards);
+  }
+
+  function onWizardsError(errorText) {
+    window.utils.showError(errorText);
+    isError = true;
+  }
+
+  function clearWizards() {
+    similarBlock.classList.add('hidden');
+    var last = similarWizards.lastChild;
+    while (last) {
+      similarWizards.removeChild(last);
+      last = similarWizards.lastChild;
+    }
+  }
+
+  function onSubmitError(errorText) {
+    window.utils.showError(errorText);
+    isError = true;
+    formSubmit.disabled = false;
+  }
+
   function openPopup() {
-    var similarWizards = window.setup.createWizardsArray();
-    window.setup.renderWizardsList(similarWizards);
-    setup.classList.remove('hidden');
-    setup.querySelector('.setup-similar').classList.remove('hidden');
-    document.addEventListener('keydown', onPopupEscPress);
+    if (setup.classList.contains('hidden')) {
+      window.backend.load(onWizardsSuccess, onWizardsError);
+      setup.classList.remove('hidden');
+      similarBlock.classList.remove('hidden');
+      document.addEventListener('keydown', onPopupEscPress);
+    }
   }
 
   function closePopup() {
+    if (isError) {
+      window.utils.clearErrors();
+      isError = false;
+    }
     setup.classList.add('hidden');
     setup.style.left = setupInitPosition.left;
     setup.style.top = setupInitPosition.top;
+    clearWizards();
     document.removeEventListener('keydown', onPopupEscPress);
   }
+
+  function onFormSubmit(evt) {
+    evt.preventDefault();
+    if (isError) {
+      window.utils.clearErrors();
+      isError = false;
+    }
+    formSubmit.disabled = true;
+    window.backend.save(new FormData(form), function () {
+      closePopup();
+      formSubmit.disabled = false;
+    }, onSubmitError);
+  }
+
+  form.addEventListener('submit', onFormSubmit);
 
   setupOpen.addEventListener('click', function () {
     openPopup();

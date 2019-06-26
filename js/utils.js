@@ -10,6 +10,15 @@
     getRandomNumber: function (min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
     },
+    shuffleArray: function (array) {
+      for (var i = array.length - 1; i > 0; i--) {
+        var j = Math.floor(Math.random() * (i + 1));
+        var shift = array[j];
+        array[j] = array[i];
+        array[i] = shift;
+      }
+      return array;
+    },
     isEscEvent: function (evt, action) {
       if (evt.keyCode === KeyCodes.ESC) {
         action();
@@ -19,6 +28,23 @@
       if (evt.keyCode === KeyCodes.ENTER) {
         action();
       }
+    },
+    showError: function (errorText) {
+      var node = document.createElement('div');
+      node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+      node.style.position = 'absolute';
+      node.style.left = 0;
+      node.style.right = 0;
+      node.style.fontSize = '30px';
+      node.textContent = errorText;
+      node.classList.add('error');
+      document.body.insertAdjacentElement('afterbegin', node);
+    },
+    clearErrors: function () {
+      var errors = document.querySelectorAll('.error');
+      errors.forEach(function (error) {
+        error.remove();
+      });
     }
   };
 })();
