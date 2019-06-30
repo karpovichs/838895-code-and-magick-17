@@ -10,6 +10,10 @@
     getRandomNumber: function (min, max) {
       return Math.floor(Math.random() * (max - min)) + min;
     },
+    getRandomElement: function (array) {
+      var randomElementIndex = Math.floor(Math.random() * array.length);
+      return array[randomElementIndex];
+    },
     shuffleArray: function (array) {
       for (var i = array.length - 1; i > 0; i--) {
         var j = Math.floor(Math.random() * (i + 1));
@@ -29,6 +33,7 @@
         action();
       }
     },
+    isError: false,
     showError: function (errorText) {
       var node = document.createElement('div');
       node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';

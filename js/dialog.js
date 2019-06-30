@@ -12,8 +12,6 @@
   var form = setup.querySelector('.setup-wizard-form');
   var formSubmit = form.querySelector('.setup-submit');
   var similarBlock = setup.querySelector('.setup-similar');
-  var similarWizards = similarBlock.querySelector('.setup-similar-list');
-  var isError = false;
 
   function onPopupEscPress(evt) {
     if (evt.target !== nameInput) {
@@ -21,56 +19,37 @@
     }
   }
 
-  function onWizardsSuccess(wizards) {
-    window.setup.renderWizardsList(wizards);
-  }
-
-  function onWizardsError(errorText) {
-    window.utils.showError(errorText);
-    isError = true;
-  }
-
-  function clearWizards() {
-    similarBlock.classList.add('hidden');
-    var last = similarWizards.lastChild;
-    while (last) {
-      similarWizards.removeChild(last);
-      last = similarWizards.lastChild;
-    }
-  }
-
   function onSubmitError(errorText) {
     window.utils.showError(errorText);
-    isError = true;
+    window.utils.isError = true;
     formSubmit.disabled = false;
   }
 
   function openPopup() {
     if (setup.classList.contains('hidden')) {
-      window.backend.load(onWizardsSuccess, onWizardsError);
       setup.classList.remove('hidden');
       similarBlock.classList.remove('hidden');
+      window.similar.updateWizards();
       document.addEventListener('keydown', onPopupEscPress);
     }
   }
 
   function closePopup() {
-    if (isError) {
+    if (window.utils.isError) {
       window.utils.clearErrors();
-      isError = false;
+      window.utils.isError = false;
     }
     setup.classList.add('hidden');
     setup.style.left = setupInitPosition.left;
     setup.style.top = setupInitPosition.top;
-    clearWizards();
     document.removeEventListener('keydown', onPopupEscPress);
   }
 
   function onFormSubmit(evt) {
     evt.preventDefault();
-    if (isError) {
+    if (window.utils.isError) {
       window.utils.clearErrors();
-      isError = false;
+      window.utils.isError = false;
     }
     formSubmit.disabled = true;
     window.backend.save(new FormData(form), function () {
